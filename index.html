@@ -56,7 +56,6 @@
       from { opacity: 0; transform: translateY(8px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    /* Scrollbar ixchamligi */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -101,7 +100,7 @@
     </div>
     <div class="bg-white border border-slate-200/90 rounded-2xl p-3 text-center shadow-sm">
       <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jami Hifz Qilingan</span>
-      <span id="totalMemorizedStat" class="block text-lg sm:text-xl font-extrabold text-brand-700">269 bet</span>
+      <span id="totalMemorizedStat" class="block text-lg sm:text-xl font-extrabold text-brand-700">289 bet</span>
     </div>
     <div class="bg-white border border-slate-200/90 rounded-2xl p-3 text-center shadow-sm">
       <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">O'rtacha Tezlik</span>
@@ -272,7 +271,7 @@
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-600 mb-1">Yetib kelgan oxirgi beti (1-604)</label>
-        <input type="number" id="inputDailyCurrentPage" placeholder="Masalan: 246" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-brand-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <input type="number" id="inputDailyCurrentPage" placeholder="Masalan: 265" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-brand-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
         <div id="quranPageHint" class="text-[11px] font-semibold text-emerald-700 mt-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 hidden"></div>
       </div>
       <div>
@@ -318,8 +317,8 @@
 
     <!-- 2-tab: Grafik (Chart.js) -->
     <div id="historyChartContent" class="hidden flex-1 overflow-y-auto py-3 flex-col items-center justify-center">
-      <div class="w-full bg-slate-50 p-3 rounded-2xl border border-slate-200">
-        <canvas id="studentProgressChart" height="200"></canvas>
+      <div class="w-full bg-slate-50 p-3 rounded-2xl border border-slate-200" style="min-height: 220px;">
+        <canvas id="studentProgressChart"></canvas>
       </div>
       <p class="text-[11px] text-slate-400 mt-2 text-center">Har bir kiritilgan yangi dars o'sish egri chizig'ida aks etadi</p>
     </div>
@@ -350,10 +349,10 @@
   <span id="toastMsg">Xabar</span>
 </div>
 
-<!-- JavaScript & Firebase Realtime Integratsiyasi -->
+<!-- JavaScript & To'liq Sozlangan Firebase Firestore Integratsiyasi -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // ==========================================================
@@ -440,9 +439,8 @@ function getQuranPosition(pageNumber) {
 }
 
 // ==========================================================
-// 2. SIZNING ANIQ FIREBASE SOZLAMALARINGIZ
+// 2. FIREBASE SOZLAMALARI
 // ==========================================================
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'boston-hifz-app';
 const firebaseConfig = {
   apiKey: "AIzaSyBHND9nb-EDTYMUWpqdu32aobO5oKR4ozQ",
   authDomain: "boshlangich-hifz.firebaseapp.com",
@@ -461,17 +459,16 @@ let uploadedPhotoBase64 = "";
 let pendingDeleteStudentId = null;
 let chartInstance = null;
 
-// Rasmingizdagi aniq 3 nafar shogird (O'rtacha ko'rsatkich 0 dan boshlanadi)
+// Shogirdlar ro'yxati (Muhammad Ovays 265-betga o'rnatildi)
 const INITIAL_STUDENTS = [
   {
     id: "std_ovays",
     name: "محمد أوايس",
-    currentPage: 245,
+    currentPage: 265,
     totalPages: 604,
     revisionPlan: "Har kuni 3 bet",
     photo: "",
-    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 10),
-    history: [] // Darslar hali kiritilmagani sababli ko'rsatkich 0.00
+    history: []
   },
   {
     id: "std_mahmud",
@@ -480,7 +477,6 @@ const INITIAL_STUDENTS = [
     totalPages: 604,
     revisionPlan: "Har kuni 0.5 bet takror",
     photo: "",
-    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 5),
     history: []
   },
   {
@@ -490,7 +486,6 @@ const INITIAL_STUDENTS = [
     totalPages: 604,
     revisionPlan: "Har kuni 0.5 bet takror",
     photo: "",
-    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 3),
     history: []
   }
 ];
@@ -532,7 +527,15 @@ function loadLocal() {
     const pin = localStorage.getItem("boston_pin_cache");
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) students = parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Agar keshdagi Muhammad Ovays eski bo'lsa yangilash
+        students = parsed.map(st => {
+          if (st.id === "std_ovays" && (!st.currentPage || st.currentPage === 245)) {
+            return { ...st, currentPage: 265 };
+          }
+          return st;
+        });
+      }
     }
     if (pin) systemPin = pin;
   } catch (e) {
@@ -546,15 +549,15 @@ async function syncToCloud(targetStudent = null) {
 
   if (db && currentUser) {
     try {
-      const configRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+      const configRef = doc(db, 'hifz_config', 'system');
       await setDoc(configRef, { pin: systemPin, updatedAt: Date.now() }, { merge: true });
 
       if (targetStudent) {
-        const studentRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', targetStudent.id);
+        const studentRef = doc(db, 'hifz_students', targetStudent.id);
         await setDoc(studentRef, targetStudent, { merge: true });
       } else {
         for (const st of students) {
-          const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', st.id);
+          const studentDocRef = doc(db, 'hifz_students', st.id);
           await setDoc(studentDocRef, st, { merge: true });
         }
       }
@@ -572,15 +575,10 @@ async function initFirebase() {
     db = getFirestore(app);
     auth = getAuth(app);
 
-    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-      await signInWithCustomToken(auth, __initial_auth_token);
-    } else {
-      await signInAnonymously(auth);
-    }
-
+    await signInAnonymously(auth);
     currentUser = auth.currentUser;
 
-    const studentsCol = collection(db, 'artifacts', appId, 'public', 'data', 'students');
+    const studentsCol = collection(db, 'hifz_students');
     onSnapshot(studentsCol, (snapshot) => {
       if (!snapshot.empty) {
         const list = [];
@@ -599,7 +597,7 @@ async function initFirebase() {
       updateCloudStatus(false, "Oflayn rejim");
     });
 
-    const configRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+    const configRef = doc(db, 'hifz_config', 'system');
     onSnapshot(configRef, (snap) => {
       if (snap.exists() && snap.data().pin) {
         systemPin = snap.data().pin;
@@ -614,7 +612,7 @@ async function initFirebase() {
 }
 
 // ==========================================================
-// 3. STATISTIK HISOBLASHLAR (O'rtacha tezlik dars kiritilganda hisoblanadi)
+// 3. STATISTIK HISOBLASHLAR
 // ==========================================================
 function calculateStudentMetrics(st) {
   const current = Number(st.currentPage) || 0;
@@ -622,7 +620,6 @@ function calculateStudentMetrics(st) {
   const percent = Math.min(100, (current / total) * 100).toFixed(1);
   const remaining = Math.max(0, total - current);
 
-  // O'rtacha tezlik: Faqat kiritilgan kunlik darslar (history) bo'yicha aniq hisoblanadi
   let avgSpeed = "0.00";
   if (st.history && st.history.length > 0) {
     const totalAdded = st.history.reduce((acc, h) => acc + (Number(h.added) || 0), 0);
@@ -683,7 +680,6 @@ function renderApp() {
     filtered = filtered.filter(s => s.name && s.name.toLowerCase().includes(search));
   }
 
-  // Umumiy ko'rsatkichlar
   let sumMemorized = 0;
   let sumSpeed = 0;
   let studentsWithSpeed = 0;
@@ -729,7 +725,7 @@ function renderApp() {
     return `
       <div class="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-sm hover:shadow-md transition">
         
-        <!-- Yuqori qism: Ism va Ustoz boshqaruvi -->
+        <!-- Ism va Tahrirlash -->
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex items-center gap-3 cursor-pointer view-history-btn" data-id="${st.id}">
             ${avatarHtml}
@@ -756,7 +752,7 @@ function renderApp() {
           ` : ''}
         </div>
 
-        <!-- Qur'on Joylashuvi (Sura, Pora, Bet) belgisi -->
+        <!-- Qur'on Joylashuvi (Sura, Pora, Bet) -->
         <div class="mt-3.5 bg-gradient-to-r from-brand-900 to-emerald-900 text-white rounded-2xl p-3 flex items-center justify-between shadow-inner">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center font-black text-amber-300 text-xs">
@@ -852,10 +848,9 @@ document.querySelectorAll('.modal-close-btn').forEach(b => {
   b.onclick = () => closeModal(b.getAttribute('data-target'));
 });
 
-// Qidiruv
 document.getElementById('searchInput').addEventListener('input', () => renderApp());
 
-// Shogird surati yuklash
+// Surat yuklash
 document.getElementById('inputStudentPhoto').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -871,7 +866,7 @@ document.getElementById('inputStudentPhoto').addEventListener('change', function
       if (w > h) {
         if (w > MAX) { h *= MAX / w; w = MAX; }
       } else {
-        if (h > MAX) { w *= MAX / h; h = MAX; }
+        if (h > MAX) { h *= MAX / h; h = MAX; }
       }
       canvas.width = w;
       canvas.height = h;
@@ -944,7 +939,7 @@ document.getElementById('submitPinChangeBtn').onclick = () => {
   systemPin = newP;
   syncToCloud();
   closeModal("pinModal");
-  showToast("Yangi PIN kod muvaffaqiyatli saqlandi!");
+  showToast("Yangi PIN kod saqlandi!");
 };
 
 // ==========================================================
@@ -1009,7 +1004,6 @@ document.getElementById('submitStudentBtn').onclick = () => {
       totalPages: 604,
       revisionPlan: rev,
       photo: uploadedPhotoBase64,
-      createdAt: Date.now(),
       history: []
     };
     students.unshift(targetSt);
@@ -1021,7 +1015,7 @@ document.getElementById('submitStudentBtn').onclick = () => {
 };
 
 // ==========================================================
-// 7. KUNLIK DARS KIRITISH (Avtomatik tezlik yangilanadi)
+// 7. KUNLIK DARS KIRITISH
 // ==========================================================
 function openDailyForm(id) {
   const st = students.find(s => s.id === id);
@@ -1083,11 +1077,11 @@ document.getElementById('submitDailyBtn').onclick = () => {
 
   syncToCloud(current);
   closeModal("dailyModal");
-  showToast("Yangi dars saqlandi, o'rtacha tezlik avtomatik hisoblandi!");
+  showToast("Dars saqlandi, o'rtacha ko'rsatkich hisoblandi!");
 };
 
 // ==========================================================
-// 8. TARIX VA CHART (GRAFIK) KO'RINIShI
+// 8. TARIX VA CHART (GRAFIK) KO'RINISHI
 // ==========================================================
 let currentHistoryStudent = null;
 
@@ -1098,17 +1092,16 @@ function renderStudentChart(st) {
 
   if (chartInstance) {
     chartInstance.destroy();
+    chartInstance = null;
   }
 
-  // Grafik uchun ma'lumotlarni yig'ish (xronologik tartibda)
   let labels = [];
   let dataPoints = [];
 
   if (st.history && st.history.length > 0) {
-    // Eng qadimgidan eng yangisiga qarab tartiblash
     const sorted = [...st.history].reverse();
-    sorted.forEach((item, index) => {
-      labels.push(item.date.split(',')[0]); // faqat sana
+    sorted.forEach(item => {
+      labels.push(item.date.split(',')[0]);
       dataPoints.push(item.newPage);
     });
   } else {
@@ -1170,14 +1163,13 @@ function showStudentHistory(id) {
   document.getElementById("historyModalTitle").innerText = `${st.name} — Hifz Tarixi & Grafigi`;
   const body = document.getElementById("historyListContent");
 
-  // Tablarni dastlabki holatga qo'yish
   activateHistoryTab('list');
 
   if (!st.history || st.history.length === 0) {
     body.innerHTML = `
       <div class="text-center py-8 text-slate-400">
         <i class="fa-solid fa-book-open text-3xl mb-2 text-slate-300"></i>
-        <p class="text-xs font-semibold">Hozircha kunlik darslar kiritilmagan.</p>
+        <p class="text-xs font-semibold">Hozircha darslar kiritilmagan.</p>
         <p class="text-[11px] text-slate-400 mt-1">Ustoz yangi dars kiritishi bilan bu yerda tarix va grafik namoyon bo'ladi.</p>
       </div>
     `;
@@ -1220,7 +1212,9 @@ function activateHistoryTab(tab) {
     listContent.classList.add("hidden");
     chartContent.classList.remove("hidden");
     chartContent.classList.add("flex");
-    if (currentHistoryStudent) renderStudentChart(currentHistoryStudent);
+    setTimeout(() => {
+      if (currentHistoryStudent) renderStudentChart(currentHistoryStudent);
+    }, 50);
   } else {
     listBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 flex items-center justify-center gap-1.5 transition";
     chartBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition";
@@ -1250,7 +1244,7 @@ document.getElementById('confirmDeleteBtn').onclick = async () => {
 
   if (db && currentUser) {
     try {
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', id);
+      const docRef = doc(db, 'hifz_students', id);
       await deleteDoc(docRef);
     } catch (e) {
       console.warn("Firestore delete ogohlantirish:", e);
