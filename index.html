@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Qur'on Hifz & Ota-onalar Nazorati</title>
+  <title>Bo'ston Hifz Markazi — Qur'on Hifz & Ota-onalar Nazorati</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js Vizual Grafiklar uchun -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Fontlar & Ikonkalar -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script>
     tailwind.config = {
       theme: {
@@ -44,36 +49,47 @@
     .modal-active {
       display: flex !important;
     }
-    /* Silliq animatsiyalar */
     .fade-enter {
-      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    /* Scrollbar ixchamligi */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen pb-20 antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-100 text-slate-900 min-h-screen pb-24 antialiased selection:bg-brand-500 selection:text-white">
 
 <div class="max-w-3xl mx-auto px-3.5 pt-4 sm:pt-6">
 
-  <!-- Yuqori Asosiy Banner (Ota-onalar va Ustoz uchun) -->
+  <!-- Yuqori Asosiy Pesh Lavha: Bo'ston Hifz Markazi -->
   <header class="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white rounded-3xl p-5 sm:p-7 shadow-xl shadow-brand-950/20 text-center mb-4 relative overflow-hidden border border-brand-700/40">
     <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-extrabold uppercase tracking-wider mb-2.5">
       <span>📖</span> Qur'oni Karim Hifz Nazorati
     </div>
-    <h1 class="text-xl sm:text-2xl font-black tracking-tight mb-1 text-white">
-      Madina Mushafi Hifz Dasturi
+    <h1 class="text-2xl sm:text-3xl font-black tracking-tight mb-1 text-white">
+      Bo'ston Hifz Markazi
     </h1>
     <p class="text-xs sm:text-sm text-emerald-200/90 max-w-md mx-auto font-medium mb-3.5">
-      Shogirdlarning kunlik saboqlari, takrorlari va ota-onalar uchun ochiq hisobot
+      Shogirdlarning kunlik saboqlari, takrorlari va ota-onalar uchun ochiq monitoring tizimi
     </p>
 
     <!-- Jonli Bulutli Holat Indikatori -->
     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/35 text-[11px] font-semibold text-emerald-300 border border-white/10 backdrop-blur-sm">
       <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span id="cloudStatusText">Baza ulanmoqda...</span>
+      <span id="cloudStatusText">Jonli Sinxron</span>
     </div>
   </header>
 
@@ -81,15 +97,15 @@
   <div class="grid grid-cols-3 gap-2.5 mb-4">
     <div class="bg-white border border-slate-200/90 rounded-2xl p-3 text-center shadow-sm">
       <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Shogirdlar</span>
-      <span id="totalStudentsStat" class="block text-lg sm:text-xl font-extrabold text-slate-800">0</span>
+      <span id="totalStudentsStat" class="block text-lg sm:text-xl font-extrabold text-slate-800">3</span>
     </div>
     <div class="bg-white border border-slate-200/90 rounded-2xl p-3 text-center shadow-sm">
-      <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jami O'zlashtirilgan</span>
-      <span id="totalMemorizedStat" class="block text-lg sm:text-xl font-extrabold text-brand-700">0 bet</span>
+      <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jami Hifz Qilingan</span>
+      <span id="totalMemorizedStat" class="block text-lg sm:text-xl font-extrabold text-brand-700">269 bet</span>
     </div>
     <div class="bg-white border border-slate-200/90 rounded-2xl p-3 text-center shadow-sm">
       <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">O'rtacha Tezlik</span>
-      <span id="avgSpeedStat" class="block text-lg sm:text-xl font-extrabold text-amber-600">0.0 /kun</span>
+      <span id="avgSpeedStat" class="block text-lg sm:text-xl font-extrabold text-amber-600">0.00 /kun</span>
     </div>
   </div>
 
@@ -200,8 +216,8 @@
     
     <div class="space-y-3.5 mb-5">
       <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1">Shogird Ismi va Familiyasi *</label>
-        <input type="text" id="inputStudentName" placeholder="Masalan: Muhammad Amin" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <label class="block text-xs font-bold text-slate-600 mb-1">Shogird Ismi Sharif *</label>
+        <input type="text" id="inputStudentName" placeholder="Masalan: محمد أوايس" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
       </div>
 
       <div class="grid grid-cols-2 gap-2">
@@ -210,18 +226,18 @@
           <input type="number" id="inputStudentCurrentPage" min="0" max="604" placeholder="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Jami Mushaf beti</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Jami Mushaf hajmi</label>
           <input type="number" id="inputStudentTotalTarget" value="604" class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-2xl text-sm font-medium text-slate-500" readonly>
         </div>
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1">Doimiy Takror rejasi (Qaytarish)</label>
-        <input type="text" id="inputStudentRevisionPlan" placeholder="Masalan: Har kuni 1 poradan takror" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <label class="block text-xs font-bold text-slate-600 mb-1">Takrorlash rejasi (Qaytarish)</label>
+        <input type="text" id="inputStudentRevisionPlan" placeholder="Masalan: Har kuni 3 bet" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1">Shogird Rasmi (ixtiyoriy)</label>
+        <label class="block text-xs font-bold text-slate-600 mb-1">Surat (ixtiyoriy)</label>
         <input type="file" id="inputStudentPhoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer">
         <div id="photoPreviewContainer" class="hidden mt-2 flex items-center gap-3">
           <img id="photoPreviewImg" class="w-12 h-12 rounded-full object-cover border-2 border-brand-500 shadow-sm">
@@ -237,7 +253,7 @@
   </div>
 </div>
 
-<!-- 4. Yangi Dars & Takror Kiritish Modali (Qur'on Xaritasi bilan) -->
+<!-- 4. Yangi Dars & Takror Kiritish Modali -->
 <div id="dailyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
   <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 shadow-2xl border border-slate-100 fade-enter">
     <div class="flex items-center justify-between mb-3">
@@ -251,21 +267,21 @@
     
     <div class="space-y-3 mb-4">
       <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1">Bugun o'tgan bet soni (masalan: 1 yoki 2)</label>
+        <label class="block text-xs font-bold text-slate-600 mb-1">Bugun o'tgan yangi bet soni (masalan: 1 yoki 2)</label>
         <input type="number" step="any" id="inputDailyAddedPages" placeholder="1" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-600 mb-1">Yetib kelgan oxirgi beti (1-604)</label>
-        <input type="number" id="inputDailyCurrentPage" placeholder="Masalan: 45" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-brand-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <input type="number" id="inputDailyCurrentPage" placeholder="Masalan: 246" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-brand-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
         <div id="quranPageHint" class="text-[11px] font-semibold text-emerald-700 mt-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 hidden"></div>
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-600 mb-1">Bugun takrorlangan qism</label>
-        <input type="text" id="inputDailyRev" placeholder="Masalan: 1-pora to'liq yoki 5 bet" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <input type="text" id="inputDailyRev" placeholder="Masalan: 3 bet yoki Yusuf surasi" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-600 mb-1">Ustoz izohi (Ota-onalar ko'radi)</label>
-        <input type="text" id="inputDailyNote" placeholder="Mashalloh, tajvidi yaxshi o'tdi..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
+        <input type="text" id="inputDailyNote" placeholder="Mashalloh, ravon va tajvid bilan topshirdi..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">
       </div>
     </div>
 
@@ -276,21 +292,40 @@
   </div>
 </div>
 
-<!-- 5. Ota-onalar va Tarix Hisoboti Modali -->
+<!-- 5. Ota-onalar va Tarix Hisoboti & Chart (Grafik) Modali -->
 <div id="historyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-  <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col fade-enter">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 max-h-[88vh] flex flex-col fade-enter">
     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
       <div>
-        <h3 id="historyModalTitle" class="font-extrabold text-slate-800 text-base">Shogird Tarixi & Baholari</h3>
-        <p class="text-xs text-slate-500 font-medium">Barcha o'tilgan saboqlar va ota-onalar hisoboti</p>
+        <h3 id="historyModalTitle" class="font-extrabold text-slate-800 text-base">Shogird Tarixi & Hifz Grafigi</h3>
+        <p class="text-xs text-slate-500 font-medium">Kunlik o'sish dinamikasi va darslar tarixi</p>
       </div>
       <button class="modal-close-btn text-slate-400 hover:text-slate-600 text-lg w-7 h-7 flex items-center justify-center rounded-lg" data-target="historyModal">&times;</button>
     </div>
     
-    <div id="historyModalBody" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
+    <!-- Ichki Tablar: Tarix ro'yxati va Dinamik Grafik -->
+    <div class="flex gap-2 pt-3 pb-2 border-b border-slate-100">
+      <button id="tabHistoryListBtn" class="flex-1 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-list-check"></i> Kunlik Tarix
+      </button>
+      <button id="tabHistoryChartBtn" class="flex-1 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-chart-line text-emerald-600"></i> Hifz Grafigi (Chart)
+      </button>
+    </div>
+
+    <!-- 1-tab: Tarix ro'yxati -->
+    <div id="historyListContent" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
+
+    <!-- 2-tab: Grafik (Chart.js) -->
+    <div id="historyChartContent" class="hidden flex-1 overflow-y-auto py-3 flex-col items-center justify-center">
+      <div class="w-full bg-slate-50 p-3 rounded-2xl border border-slate-200">
+        <canvas id="studentProgressChart" height="200"></canvas>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-2 text-center">Har bir kiritilgan yangi dars o'sish egri chizig'ida aks etadi</p>
+    </div>
 
     <div class="pt-3 border-t border-slate-100 flex justify-end">
-      <button class="modal-close-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl text-sm" data-target="historyModal">Yopish</button>
+      <button class="modal-close-btn px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl text-xs" data-target="historyModal">Yopish</button>
     </div>
   </div>
 </div>
@@ -315,15 +350,16 @@
   <span id="toastMsg">Xabar</span>
 </div>
 
+<!-- JavaScript & Firebase Realtime Integratsiyasi -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// ==========================================
-// 1. QUR'ON XARITASI (604 BET, 30 PORA, SURALAR)
-// ==========================================
-const QURAN_SURAH_PAGES = [
+// ==========================================================
+// 1. QUR'ON XARITASI (Madina Mushafi 604 bet, 30 pora, 114 sura)
+// ==========================================================
+const QURAN_SURAHS = [
   { no: 1, name: "Fotiha", ar: "الفاتحة", startPage: 1 },
   { no: 2, name: "Baqara", ar: "البقرة", startPage: 2 },
   { no: 3, name: "Oli Imron", ar: "آل عمران", startPage: 50 },
@@ -354,7 +390,26 @@ const QURAN_SURAH_PAGES = [
   { no: 28, name: "Qasas", ar: "القصص", startPage: 385 },
   { no: 29, name: "Ankabut", ar: "العنكبوت", startPage: 396 },
   { no: 30, name: "Rum", ar: "الروم", startPage: 404 },
+  { no: 31, name: "Luqmon", ar: "لقمان", startPage: 411 },
+  { no: 32, name: "Sajda", ar: "السجدة", startPage: 415 },
+  { no: 33, name: "Ahzob", ar: "الأحزاب", startPage: 418 },
+  { no: 34, name: "Saba", ar: "سبإ", startPage: 428 },
+  { no: 35, name: "Fotir", ar: "فاطر", startPage: 434 },
   { no: 36, name: "Yosin", ar: "يس", startPage: 440 },
+  { no: 37, name: "Soffot", ar: "الصافات", startPage: 446 },
+  { no: 38, name: "Sod", ar: "ص", startPage: 453 },
+  { no: 39, name: "Zumar", ar: "الزمر", startPage: 458 },
+  { no: 40, name: "G'ofir", ar: "غافر", startPage: 467 },
+  { no: 41, name: "Fussilat", ar: "فصلت", startPage: 477 },
+  { no: 42, name: "Shuro", ar: "الشورى", startPage: 483 },
+  { no: 43, name: "Zuxruf", ar: "الزخرف", startPage: 489 },
+  { no: 44, name: "Duxon", ar: "الدخان", startPage: 496 },
+  { no: 45, name: "Josiya", ar: "الجاثية", startPage: 499 },
+  { no: 46, name: "Ahqof", ar: "الأحقاف", startPage: 502 },
+  { no: 47, name: "Muhammad", ar: "محمد", startPage: 507 },
+  { no: 48, name: "Fath", ar: "الفتح", startPage: 511 },
+  { no: 49, name: "Hujurot", ar: "الحجرات", startPage: 515 },
+  { no: 50, name: "Qof", ar: "ق", startPage: 518 },
   { no: 55, name: "Ar-Rohman", ar: "الرحمن", startPage: 531 },
   { no: 56, name: "Voqea", ar: "الواقعة", startPage: 534 },
   { no: 67, name: "Mulk", ar: "الملك", startPage: 562 },
@@ -362,14 +417,14 @@ const QURAN_SURAH_PAGES = [
   { no: 114, name: "Nos", ar: "الناس", startPage: 604 }
 ];
 
-function getQuranInfoByPage(pageNumber) {
-  const p = Math.max(1, Math.min(604, Number(pageNumber) || 1));
-  const juz = Math.ceil(p / 20.133); // 604 bet 30 poraga
+function getQuranPosition(pageNumber) {
+  const p = Math.max(1, Math.min(604, Math.floor(Number(pageNumber) || 1)));
+  const juz = Math.min(30, Math.floor((p - 1) / 20) + 1);
 
-  let currentSurah = QURAN_SURAH_PAGES[0];
-  for (let i = 0; i < QURAN_SURAH_PAGES.length; i++) {
-    if (p >= QURAN_SURAH_PAGES[i].startPage) {
-      currentSurah = QURAN_SURAH_PAGES[i];
+  let currentSurah = QURAN_SURAHS[0];
+  for (let i = 0; i < QURAN_SURAHS.length; i++) {
+    if (p >= QURAN_SURAHS[i].startPage) {
+      currentSurah = QURAN_SURAHS[i];
     } else {
       break;
     }
@@ -377,17 +432,17 @@ function getQuranInfoByPage(pageNumber) {
 
   return {
     page: p,
-    juz: juz > 30 ? 30 : juz,
+    juz: juz,
     surahName: currentSurah.name,
     surahArabic: currentSurah.ar,
     surahNo: currentSurah.no
   };
 }
 
-// ==========================================
-// 2. SIZNING SHAXSIY FIREBASE SOZLAMALARINGIZ
-// ==========================================
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'boshlangich-hifz-loyihasi';
+// ==========================================================
+// 2. SIZNING ANIQ FIREBASE SOZLAMALARINGIZ
+// ==========================================================
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'boston-hifz-app';
 const firebaseConfig = {
   apiKey: "AIzaSyBHND9nb-EDTYMUWpqdu32aobO5oKR4ozQ",
   authDomain: "boshlangich-hifz.firebaseapp.com",
@@ -400,48 +455,43 @@ const firebaseConfig = {
 let db = null;
 let auth = null;
 let currentUser = null;
-let isAdmin = localStorage.getItem("hifz_otaona_admin") === "true";
+let isAdmin = localStorage.getItem("boston_is_teacher") === "true";
 let systemPin = "1234";
 let uploadedPhotoBase64 = "";
 let pendingDeleteStudentId = null;
+let chartInstance = null;
 
-// Boshlang'ich 3 nafar shogird
+// Rasmingizdagi aniq 3 nafar shogird (O'rtacha ko'rsatkich 0 dan boshlanadi)
 const INITIAL_STUDENTS = [
   {
-    id: "std_1",
-    name: "Muhammad Amin",
-    currentPage: 45,
+    id: "std_ovays",
+    name: "محمد أوايس",
+    currentPage: 245,
     totalPages: 604,
-    revisionPlan: "Har kuni 1 poradan takror",
-    photo: "",
-    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 30),
-    history: [
-      { date: "05.09.2026, 17:30", added: 1, newPage: 45, rev: "2-pora", note: "Yaxshi topshirdi" }
-    ]
-  },
-  {
-    id: "std_2",
-    name: "Muhammadiy",
-    currentPage: 28,
-    totalPages: 604,
-    revisionPlan: "Har kuni 6 bet takror",
-    photo: "",
-    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 20),
-    history: [
-      { date: "05.09.2026, 17:35", added: 1, newPage: 28, rev: "1-pora", note: "Mukammal o'qildi" }
-    ]
-  },
-  {
-    id: "std_3",
-    name: "Muhammad Safiy",
-    currentPage: 12,
-    totalPages: 604,
-    revisionPlan: "Har kuni 7 bet takror",
+    revisionPlan: "Har kuni 3 bet",
     photo: "",
     createdAt: Date.now() - (1000 * 60 * 60 * 24 * 10),
-    history: [
-      { date: "05.09.2026, 17:40", added: 1, newPage: 12, rev: "Yarim pora", note: "Tajvidiga e'tibor qaratildi" }
-    ]
+    history: [] // Darslar hali kiritilmagani sababli ko'rsatkich 0.00
+  },
+  {
+    id: "std_mahmud",
+    name: "محمود",
+    currentPage: 12,
+    totalPages: 604,
+    revisionPlan: "Har kuni 0.5 bet takror",
+    photo: "",
+    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 5),
+    history: []
+  },
+  {
+    id: "std_sodiq",
+    name: "محمد صدق",
+    currentPage: 12,
+    totalPages: 604,
+    revisionPlan: "Har kuni 0.5 bet takror",
+    photo: "",
+    createdAt: Date.now() - (1000 * 60 * 60 * 24 * 3),
+    history: []
   }
 ];
 
@@ -456,7 +506,7 @@ function updateCloudStatus(isOnline, text) {
     txt.innerText = text || "Jonli Sinxron";
   } else {
     dot.className = "w-2 h-2 rounded-full bg-amber-400";
-    txt.innerText = text || "Oflayn saqlandi";
+    txt.innerText = text || "Oflayn rejim";
   }
 }
 
@@ -466,20 +516,20 @@ function showToast(text) {
   if (!box || !msg) return;
   msg.innerText = text;
   box.classList.remove("hidden");
-  setTimeout(() => box.classList.add("hidden"), 2600);
+  setTimeout(() => box.classList.add("hidden"), 2500);
 }
 
 function saveLocal() {
   try {
-    localStorage.setItem("hifz_students_cache", JSON.stringify(students));
-    localStorage.setItem("hifz_pin_cache", systemPin);
+    localStorage.setItem("boston_students_cache", JSON.stringify(students));
+    localStorage.setItem("boston_pin_cache", systemPin);
   } catch (e) {}
 }
 
 function loadLocal() {
   try {
-    const raw = localStorage.getItem("hifz_students_cache");
-    const pin = localStorage.getItem("hifz_pin_cache");
+    const raw = localStorage.getItem("boston_students_cache");
+    const pin = localStorage.getItem("boston_pin_cache");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) students = parsed;
@@ -490,7 +540,7 @@ function loadLocal() {
   }
 }
 
-async function syncToCloud() {
+async function syncToCloud(targetStudent = null) {
   saveLocal();
   renderApp();
 
@@ -499,9 +549,14 @@ async function syncToCloud() {
       const configRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
       await setDoc(configRef, { pin: systemPin, updatedAt: Date.now() }, { merge: true });
 
-      for (const st of students) {
-        const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', st.id);
-        await setDoc(studentDocRef, st, { merge: true });
+      if (targetStudent) {
+        const studentRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', targetStudent.id);
+        await setDoc(studentRef, targetStudent, { merge: true });
+      } else {
+        for (const st of students) {
+          const studentDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', st.id);
+          await setDoc(studentDocRef, st, { merge: true });
+        }
       }
       updateCloudStatus(true, "Jonli Sinxron");
     } catch (e) {
@@ -553,34 +608,29 @@ async function initFirebase() {
     }, (err) => console.warn("Config error:", err));
 
   } catch (e) {
-    console.warn("Firestore xatosi:", e);
+    console.warn("Firestore ulanish:", e);
     updateCloudStatus(false, "Mahalliy rejim");
   }
 }
 
-// ==========================================
-// 3. STATISTIK HISOBLASHLAR
-// ==========================================
+// ==========================================================
+// 3. STATISTIK HISOBLASHLAR (O'rtacha tezlik dars kiritilganda hisoblanadi)
+// ==========================================================
 function calculateStudentMetrics(st) {
   const current = Number(st.currentPage) || 0;
   const total = Number(st.totalPages) || 604;
   const percent = Math.min(100, (current / total) * 100).toFixed(1);
   const remaining = Math.max(0, total - current);
 
-  // O'rtacha yodlash tezligi (tarixdan yoki kunlardan)
-  let avgSpeed = 0;
+  // O'rtacha tezlik: Faqat kiritilgan kunlik darslar (history) bo'yicha aniq hisoblanadi
+  let avgSpeed = "0.00";
   if (st.history && st.history.length > 0) {
-    let totalAdded = 0;
-    st.history.forEach(h => {
-      totalAdded += Number(h.added) || 0;
-    });
-    const daysCount = Math.max(1, st.history.length);
-    avgSpeed = (totalAdded / daysCount).toFixed(2);
-  } else if (current > 0) {
-    avgSpeed = (1.0).toFixed(2);
+    const totalAdded = st.history.reduce((acc, h) => acc + (Number(h.added) || 0), 0);
+    const count = st.history.length;
+    avgSpeed = (totalAdded / count).toFixed(2);
   }
 
-  const quranPos = getQuranInfoByPage(current);
+  const quranPos = getQuranPosition(current);
 
   return {
     current,
@@ -592,9 +642,9 @@ function calculateStudentMetrics(st) {
   };
 }
 
-// ==========================================
+// ==========================================================
 // 4. UI CHIZISH VA KO'RSATISH
-// ==========================================
+// ==========================================================
 function openModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add("modal-active");
@@ -633,13 +683,19 @@ function renderApp() {
     filtered = filtered.filter(s => s.name && s.name.toLowerCase().includes(search));
   }
 
-  // Umumiy hisoblagichlar
+  // Umumiy ko'rsatkichlar
   let sumMemorized = 0;
   let sumSpeed = 0;
+  let studentsWithSpeed = 0;
+
   students.forEach(st => {
     const m = calculateStudentMetrics(st);
     sumMemorized += m.current;
-    sumSpeed += parseFloat(m.avgSpeed);
+    const speedNum = parseFloat(m.avgSpeed);
+    if (speedNum > 0) {
+      sumSpeed += speedNum;
+      studentsWithSpeed++;
+    }
   });
 
   const totalStudentsEl = document.getElementById("totalStudentsStat");
@@ -649,7 +705,7 @@ function renderApp() {
   if (totalStudentsEl) totalStudentsEl.innerText = students.length;
   if (totalMemorizedEl) totalMemorizedEl.innerText = `${sumMemorized} bet`;
   if (avgSpeedEl) {
-    const overallAvg = students.length > 0 ? (sumSpeed / students.length).toFixed(2) : "0.0";
+    const overallAvg = studentsWithSpeed > 0 ? (sumSpeed / studentsWithSpeed).toFixed(2) : "0.00";
     avgSpeedEl.innerText = `${overallAvg} /kun`;
   }
 
@@ -668,21 +724,21 @@ function renderApp() {
 
     const avatarHtml = st.photo 
       ? `<img src="${st.photo}" class="w-12 h-12 rounded-full object-cover border-2 border-brand-500 shadow-sm shrink-0">` 
-      : `<div class="w-12 h-12 rounded-full bg-brand-100 text-brand-800 border-2 border-brand-500 font-extrabold text-lg flex items-center justify-center shrink-0">${(st.name || 'S').charAt(0).toUpperCase()}</div>`;
+      : `<div class="w-12 h-12 rounded-full bg-emerald-50 text-brand-800 border-2 border-brand-500 font-black text-lg flex items-center justify-center shrink-0 arabic-text">${(st.name || 'م').charAt(0)}</div>`;
 
     return `
       <div class="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-sm hover:shadow-md transition">
         
-        <!-- Yuqori qism: Ism, Rasm va Boshqaruv -->
+        <!-- Yuqori qism: Ism va Ustoz boshqaruvi -->
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div class="flex items-center gap-3 cursor-pointer view-history-btn" data-id="${st.id}">
             ${avatarHtml}
             <div>
-              <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-1.5">
+              <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-1.5 arabic-text text-lg leading-tight">
                 ${st.name}
-                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Faol</span>
+                <span class="text-[10px] font-sans font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Faol</span>
               </h3>
-              <p class="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1">
+              <p class="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1 mt-0.5">
                 <i class="fa-solid fa-chart-line text-[10px]"></i> Ota-onalar hisobotini ko'rish
               </p>
             </div>
@@ -748,7 +804,7 @@ function renderApp() {
           </div>
         </div>
 
-        <!-- Takror rejasi -->
+        <!-- Takrorlash rejasi -->
         ${st.revisionPlan ? `
           <div class="mt-2.5 bg-amber-50/80 border border-amber-200/70 rounded-2xl p-2.5 flex items-start gap-2 text-xs text-amber-900">
             <i class="fa-solid fa-arrows-rotate text-amber-600 mt-0.5"></i>
@@ -761,7 +817,7 @@ function renderApp() {
         <!-- Tugmalar qatori -->
         <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
           <button class="view-history-btn px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition flex items-center gap-1.5" data-id="${st.id}">
-            <i class="fa-solid fa-book-open"></i> Kunlik Baholar & Tarix
+            <i class="fa-solid fa-book-open text-emerald-700"></i> Kunlik Baholar & Tarix
           </button>
 
           ${isAdmin ? `
@@ -796,10 +852,10 @@ document.querySelectorAll('.modal-close-btn').forEach(b => {
   b.onclick = () => closeModal(b.getAttribute('data-target'));
 });
 
-// Qidiruv maydoni
+// Qidiruv
 document.getElementById('searchInput').addEventListener('input', () => renderApp());
 
-// Rasm yuklash va siqish
+// Shogird surati yuklash
 document.getElementById('inputStudentPhoto').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -836,11 +892,13 @@ document.getElementById('clearPhotoBtn').onclick = () => {
   document.getElementById("photoPreviewContainer").classList.add("hidden");
 };
 
-// Ustoz Kirishi
+// ==========================================================
+// 5. USTOZ REJIMI (PIN KOD)
+// ==========================================================
 document.getElementById('authBtn').onclick = () => {
   if (isAdmin) {
     isAdmin = false;
-    localStorage.removeItem("hifz_otaona_admin");
+    localStorage.removeItem("boston_is_teacher");
     renderApp();
     showToast("Ustoz rejimidan chiqildi.");
   } else {
@@ -854,7 +912,7 @@ document.getElementById('submitLoginBtn').onclick = () => {
   const p = document.getElementById("loginPinInput").value.trim();
   if (p === systemPin) {
     isAdmin = true;
-    localStorage.setItem("hifz_otaona_admin", "true");
+    localStorage.setItem("boston_is_teacher", "true");
     closeModal("loginModal");
     renderApp();
     showToast("Xush kelibsiz, Ustoz!");
@@ -865,7 +923,7 @@ document.getElementById('submitLoginBtn').onclick = () => {
 
 document.getElementById('logoutBtn').onclick = () => {
   isAdmin = false;
-  localStorage.removeItem("hifz_otaona_admin");
+  localStorage.removeItem("boston_is_teacher");
   renderApp();
   showToast("Ustoz rejimidan chiqildi.");
 };
@@ -886,10 +944,12 @@ document.getElementById('submitPinChangeBtn').onclick = () => {
   systemPin = newP;
   syncToCloud();
   closeModal("pinModal");
-  showToast("Yangi PIN kod saqlandi!");
+  showToast("Yangi PIN kod muvaffaqiyatli saqlandi!");
 };
 
-// Shogird qo'shish / Tahrirlash
+// ==========================================================
+// 6. SHOGIRD QO'SHISH VA TAHRIRLASH
+// ==========================================================
 function openStudentForm(id = null) {
   uploadedPhotoBase64 = "";
   document.getElementById("inputStudentPhoto").value = "";
@@ -929,6 +989,8 @@ document.getElementById('submitStudentBtn').onclick = () => {
 
   if (!name) return showToast("Shogird ismini kiriting!");
 
+  let targetSt = null;
+
   if (id) {
     const idx = students.findIndex(s => s.id === id);
     if (idx !== -1) {
@@ -936,10 +998,11 @@ document.getElementById('submitStudentBtn').onclick = () => {
       students[idx].currentPage = page;
       students[idx].revisionPlan = rev;
       if (uploadedPhotoBase64) students[idx].photo = uploadedPhotoBase64;
+      targetSt = students[idx];
       showToast("Ma'lumot yangilandi!");
     }
   } else {
-    const newSt = {
+    targetSt = {
       id: 'std_' + Date.now(),
       name,
       currentPage: page,
@@ -949,15 +1012,17 @@ document.getElementById('submitStudentBtn').onclick = () => {
       createdAt: Date.now(),
       history: []
     };
-    students.unshift(newSt);
+    students.unshift(targetSt);
     showToast("Yangi shogird qo'shildi!");
   }
 
-  syncToCloud();
+  syncToCloud(targetSt);
   closeModal("studentModal");
 };
 
-// Dars kiritish formasi
+// ==========================================================
+// 7. KUNLIK DARS KIRITISH (Avtomatik tezlik yangilanadi)
+// ==========================================================
 function openDailyForm(id) {
   const st = students.find(s => s.id === id);
   if (!st) return;
@@ -970,7 +1035,7 @@ function openDailyForm(id) {
   document.getElementById("inputDailyNote").value = "";
 
   const hint = document.getElementById("quranPageHint");
-  const pos = getQuranInfoByPage((st.currentPage || 0) + 1);
+  const pos = getQuranPosition((st.currentPage || 0) + 1);
   hint.innerText = `${pos.juz}-pora, ${pos.surahName} (${pos.surahArabic}) surasi`;
   hint.classList.remove("hidden");
 
@@ -980,7 +1045,7 @@ function openDailyForm(id) {
 document.getElementById("inputDailyCurrentPage").addEventListener("input", function(e) {
   const p = parseInt(e.target.value) || 1;
   const hint = document.getElementById("quranPageHint");
-  const pos = getQuranInfoByPage(p);
+  const pos = getQuranPosition(p);
   hint.innerText = `${pos.juz}-pora, ${pos.surahName} (${pos.surahArabic}) surasi`;
   hint.classList.remove("hidden");
 });
@@ -997,13 +1062,14 @@ document.getElementById('submitDailyBtn').onclick = () => {
 
   const current = students[idx];
   const now = new Date();
-  const dateString = now.toLocaleDateString("uz-UZ") + ", " + now.toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" });
+  const dateString = now.toLocaleDateString("uz-UZ", { day: '2-digit', month: '2-digit', year: 'numeric' }) + ", " + now.toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" });
 
-  const pos = getQuranInfoByPage(newP);
+  const pos = getQuranPosition(newP);
 
   if (!current.history) current.history = [];
   current.history.unshift({
     date: dateString,
+    timestamp: Date.now(),
     added: added,
     newPage: newP,
     juz: pos.juz,
@@ -1015,24 +1081,104 @@ document.getElementById('submitDailyBtn').onclick = () => {
   current.currentPage = newP;
   if (rev) current.revisionPlan = rev;
 
-  syncToCloud();
+  syncToCloud(current);
   closeModal("dailyModal");
-  showToast("Yangi dars bulutga saqlandi!");
+  showToast("Yangi dars saqlandi, o'rtacha tezlik avtomatik hisoblandi!");
 };
 
-// Tarix & Ota-onalar hisoboti
+// ==========================================================
+// 8. TARIX VA CHART (GRAFIK) KO'RINIShI
+// ==========================================================
+let currentHistoryStudent = null;
+
+function renderStudentChart(st) {
+  const canvas = document.getElementById('studentProgressChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  // Grafik uchun ma'lumotlarni yig'ish (xronologik tartibda)
+  let labels = [];
+  let dataPoints = [];
+
+  if (st.history && st.history.length > 0) {
+    // Eng qadimgidan eng yangisiga qarab tartiblash
+    const sorted = [...st.history].reverse();
+    sorted.forEach((item, index) => {
+      labels.push(item.date.split(',')[0]); // faqat sana
+      dataPoints.push(item.newPage);
+    });
+  } else {
+    labels = ["Boshlang'ich"];
+    dataPoints = [st.currentPage || 0];
+  }
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: `${st.name} — Mushaf Beti`,
+        data: dataPoints,
+        borderColor: '#15803d',
+        backgroundColor: 'rgba(34, 197, 94, 0.15)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#166534',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            font: { family: 'Plus Jakarta Sans', weight: 'bold', size: 11 }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          max: 604,
+          ticks: {
+            stepSize: 50,
+            font: { family: 'Plus Jakarta Sans', size: 10 }
+          }
+        },
+        x: {
+          ticks: {
+            font: { family: 'Plus Jakarta Sans', size: 9 }
+          }
+        }
+      }
+    }
+  });
+}
+
 function showStudentHistory(id) {
   const st = students.find(s => s.id === id);
   if (!st) return;
 
-  document.getElementById("historyModalTitle").innerText = `${st.name} — Hifz Tarixi`;
-  const body = document.getElementById("historyModalBody");
+  currentHistoryStudent = st;
+  document.getElementById("historyModalTitle").innerText = `${st.name} — Hifz Tarixi & Grafigi`;
+  const body = document.getElementById("historyListContent");
+
+  // Tablarni dastlabki holatga qo'yish
+  activateHistoryTab('list');
 
   if (!st.history || st.history.length === 0) {
     body.innerHTML = `
       <div class="text-center py-8 text-slate-400">
         <i class="fa-solid fa-book-open text-3xl mb-2 text-slate-300"></i>
-        <p class="text-xs font-semibold">Hozircha saboqlar yozilmagan.</p>
+        <p class="text-xs font-semibold">Hozircha kunlik darslar kiritilmagan.</p>
+        <p class="text-[11px] text-slate-400 mt-1">Ustoz yangi dars kiritishi bilan bu yerda tarix va grafik namoyon bo'ladi.</p>
       </div>
     `;
   } else {
@@ -1040,7 +1186,7 @@ function showStudentHistory(id) {
       <div class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs space-y-1.5 shadow-sm">
         <div class="flex items-center justify-between font-bold text-slate-700">
           <span class="text-slate-500 text-[11px]"><i class="fa-regular fa-clock mr-1"></i>${item.date}</span>
-          <span class="text-emerald-700 font-extrabold bg-emerald-100/90 px-2 py-0.5 rounded-lg">
+          <span class="text-emerald-700 font-extrabold bg-emerald-100/90 px-2.5 py-0.5 rounded-lg">
             +${item.added} bet (Hozir: ${item.newPage}-bet)
           </span>
         </div>
@@ -1052,7 +1198,7 @@ function showStudentHistory(id) {
         </div>
         ${item.note && item.note !== '-' ? `
           <div class="text-slate-600 italic bg-white p-2 rounded-xl border border-slate-100">
-            <span class="font-bold text-slate-700">Ustoz bahosi:</span> ${item.note}
+            <span class="font-bold text-slate-700">Ustoz izohi:</span> ${item.note}
           </div>
         ` : ''}
       </div>
@@ -1062,10 +1208,37 @@ function showStudentHistory(id) {
   openModal("historyModal");
 }
 
-// O'chirish
+function activateHistoryTab(tab) {
+  const listBtn = document.getElementById("tabHistoryListBtn");
+  const chartBtn = document.getElementById("tabHistoryChartBtn");
+  const listContent = document.getElementById("historyListContent");
+  const chartContent = document.getElementById("historyChartContent");
+
+  if (tab === 'chart') {
+    chartBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 flex items-center justify-center gap-1.5 transition";
+    listBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition";
+    listContent.classList.add("hidden");
+    chartContent.classList.remove("hidden");
+    chartContent.classList.add("flex");
+    if (currentHistoryStudent) renderStudentChart(currentHistoryStudent);
+  } else {
+    listBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200 flex items-center justify-center gap-1.5 transition";
+    chartBtn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition";
+    listContent.classList.remove("hidden");
+    chartContent.classList.add("hidden");
+    chartContent.classList.remove("flex");
+  }
+}
+
+document.getElementById('tabHistoryListBtn').onclick = () => activateHistoryTab('list');
+document.getElementById('tabHistoryChartBtn').onclick = () => activateHistoryTab('chart');
+
+// ==========================================================
+// 9. SHOGIRD O'CHIRISH
+// ==========================================================
 function askDeleteStudent(id, name) {
   pendingDeleteStudentId = id;
-  document.getElementById("confirmMessage").innerText = `"${name}" shogirdini va barcha tarixini butunlay o'chirmoqchimisiz?`;
+  document.getElementById("confirmMessage").innerText = `"${name}" shogirdini va uning barcha hisobotlarini butunlay o'chirmoqchimisiz?`;
   openModal("confirmModal");
 }
 
@@ -1080,7 +1253,7 @@ document.getElementById('confirmDeleteBtn').onclick = async () => {
       const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', id);
       await deleteDoc(docRef);
     } catch (e) {
-      console.warn("Firestore delete warning:", e);
+      console.warn("Firestore delete ogohlantirish:", e);
     }
   }
 
@@ -1090,9 +1263,9 @@ document.getElementById('confirmDeleteBtn').onclick = async () => {
   showToast("O'chirildi!");
 };
 
-// ==========================================
-// 5. ISHGA TUSHIRISH
-// ==========================================
+// ==========================================================
+// 10. DASTURNI ISHGA TUSHIRISH
+// ==========================================================
 window.addEventListener('DOMContentLoaded', () => {
   loadLocal();
   renderApp();
